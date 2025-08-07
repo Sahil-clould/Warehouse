@@ -1,0 +1,70 @@
+{% extends 'inventory/base.html' %}
+
+{% block title %}Task Dashboard{% endblock %}
+
+{% block content %}
+<style>
+  .table th,
+  .table td {
+    vertical-align: middle;
+    font-size: 14px;
+  }
+
+  .table thead th {
+    font-weight: 600;
+    background-color: #d4edda;
+    color: #155724;
+  }
+
+  .badge.bg-primary {
+    font-size: 13px;
+    padding: 6px 10px;
+    border-radius: 8px;
+  }
+</style>
+
+<div class="container mt-5">
+  <h2 class="mb-4 text-center">📊 Task Dashboard - Transaction Overview</h2>
+
+  {% if transactions %}
+    <div class="row">
+      <div class="col-md-12 mb-4">
+        <div class="card shadow-lg border-0">
+          <div class="card-body p-3">
+            <div class="table-responsive">
+              <table class="table table-bordered table-striped table-hover align-middle text-center">
+                <thead class="table-success">
+                  <tr>
+                    <th><i class="bi bi-calendar-event"></i> Date</th>
+                    <th><i class="bi bi-file-earmark-text"></i> Reference</th>
+                    <th><i class="bi bi-box"></i> Product</th>
+                    <th><i class="bi bi-tags"></i> Category</th>
+                    <th><i class="bi bi-currency-rupee"></i> Price (₹)</th>
+                    <th><i class="bi bi-stack"></i> Qty</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for txn in transactions %}
+                    {% for detail in txn.stockdetail_set.all %}
+                      <tr>
+                        <td>{{ txn.date|date:"M d, Y" }}</td>
+                        <td>{{ txn.reference|default:"N/A" }}</td>
+                        <td>{{ detail.product.name }}</td>
+                        <td>{{ detail.product.category }}</td>
+                        <td>₹{{ detail.product.price }}</td>
+                        <td><span class="badge bg-primary">{{ detail.quantity }}</span></td>
+                      </tr>
+                    {% endfor %}
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  {% else %}
+    <div class="alert alert-info text-center">No transactions available.</div>
+  {% endif %}
+</div>
+{% endblock %}
